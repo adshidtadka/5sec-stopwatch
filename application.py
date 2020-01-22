@@ -57,7 +57,7 @@ def auto_play():
 def get_server_url():
     user_name = request.args.get("userName")
     with open("./allocation.json") as f:
-        server_url = json.load(f)[user_name]
+        server_url = json.load(f)[user_name]["allocation"]
         return {"status": 200, "server_url": server_url}
 
 
@@ -79,7 +79,7 @@ def create_game():
 
     # multicast
     with open("./allocation.json") as f:
-        for server in json.load(f)["server_" + sys.argv[1]]:
+        for server in json.load(f)["server_" + sys.argv[1]]["allocation"]:
             url = "http://" + server + "/sync_game"
             requests.post(url, data=game_dict)
 
@@ -113,7 +113,7 @@ def create_player():
 
     # multicast
     with open("./allocation.json") as f:
-        for server in json.load(f)["server_" + sys.argv[1]]:
+        for server in json.load(f)["server_" + sys.argv[1]]["allocation"]:
             url = "http://" + server + "/sync_player"
             requests.post(url, data=request.form)
 
@@ -141,7 +141,7 @@ def update_result():
 
     # multicast
     with open("./allocation.json") as f:
-        for server in json.load(f)["server_" + sys.argv[1]]:
+        for server in json.load(f)["server_" + sys.argv[1]]["allocation"]:
             url = "http://" + server + "/sync_result"
             requests.post(url, data=request.form)
 

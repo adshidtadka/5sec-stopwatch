@@ -1,8 +1,26 @@
 {
-  "server_1": ["localhost:4002", "localhost:4003"],
-  "server_2": ["localhost:4001", "localhost:4003"],
-  "server_3": ["localhost:4001", "localhost:4002"],
-  "user_1": "localhost:4001",
-  "user_2": "localhost:4002",
-  "user_3": "localhost:4003"
+  "server_1": {
+    "allocation": ["localhost:4002", "localhost:4003"],
+    "delay": [1, 4]
+  },
+  "server_2": {
+    "allocation": ["localhost:4001", "localhost:4003"],
+    "delay": [1, 1]
+  },
+  "server_3": {
+    "allocation": ["localhost:4001", "localhost:4002"],
+    "delay": [4, 1]
+  },
+  "user_1": {
+    "allocation": "localhost:4001",
+    "delay": 2
+  },
+  "user_2": {
+    "allocation": "localhost:4002",
+    "delay": 2
+  },
+  "user_3": {
+    "allocation": "localhost:4003",
+    "delay": 2
+  }
 }
