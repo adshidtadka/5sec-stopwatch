@@ -8,6 +8,7 @@ let endLoadingTime, endTimerTime;
 let timerTimeOut, getPlayersTimeOut;
 let fetchedPlayers;
 let serverUrl = "http://localhost:4001";
+let delay;
 
 $(function() {
   if ($("#value-is-auto").text() == "True") {
@@ -26,7 +27,7 @@ $(function() {
   }
 });
 
-const getServerUrl = function() {
+const getConnection = function() {
   $.ajax({
     url: serverUrl + "/connection",
     type: "GET",
@@ -35,11 +36,12 @@ const getServerUrl = function() {
     }
   }).done(res => {
     serverUrl = "http://" + res.connection.allocation;
+    delay = res.connection.delay;
   });
 };
 
 const joinGame = function() {
-  getServerUrl();
+  getConnection();
   $.ajax({
     url: serverUrl + "/game",
     type: "GET"
@@ -66,7 +68,7 @@ const generateRandomScore = function() {
 };
 
 const createGame = function() {
-  getServerUrl();
+  getConnection();
   $.ajax({
     url: serverUrl + "/game",
     type: "POST"
