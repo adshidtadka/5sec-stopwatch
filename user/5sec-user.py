@@ -1,14 +1,11 @@
 import time
 import datetime
-from flask import Flask, render_template, send_from_directory
-import sys
+from flask import Flask, render_template, send_from_directory, request
 import os
 import json
 
-args = sys.argv
 DEBUG = False
-SERVER_NAME = "localhost:" + str(5000 + int(sys.argv[1]))
-user_name = "user_" + sys.argv[1]
+SERVER_NAME = "localhost:5000"
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -21,16 +18,19 @@ def favicon():
 
 @app.route('/')
 def index():
+    user_name = request.args.get("userName")
     return render_template('index.html', user_name=user_name)
 
 
 @app.route('/play')
 def play():
+    user_name = request.args.get("userName")
     return render_template('play.html', user_name=user_name, is_auto=False)
 
 
 @app.route("/autoplay")
 def auto_play():
+    user_name = request.args.get("userName")
     return render_template('play.html', user_name=user_name,  is_auto=True)
 
 
