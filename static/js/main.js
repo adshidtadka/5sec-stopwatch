@@ -191,7 +191,6 @@ const stopTimer = function(e) {
     "<tr><th scope='col'>#</th><th scope='col'>user</th><th scope='col'>score</th></tr>"
   );
 
-  console.log(getRemainTime(endTimerTime));
   setTimeout(postScore, getRemainTime(endTimerTime).time + delay, score);
 };
 
