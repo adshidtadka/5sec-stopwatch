@@ -1,4 +1,4 @@
-from flask import Flask, request, g, redirect, url_for
+from flask import Flask, request, g, redirect, url_for, render_template, send_from_directory
 from flask_cors import CORS, cross_origin
 from contextlib import closing
 import sqlite3
@@ -26,6 +26,30 @@ def init_db():
         with app.open_resource('models/schema.sql') as f:
             db.cursor().executescript(f.read().decode('utf-8'))
         db.commit()
+
+
+@app.route('/favicon.ico')
+@cross_origin()
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static/img'), 'stopwatch.png')
+
+
+@app.route('/')
+def index():
+    user_name = request.args.get("userName")
+    return render_template('index.html', user_name=user_name)
+
+
+@app.route('/play')
+def play():
+    user_name = request.args.get("userName")
+    return render_template('play.html', user_name=user_name, is_auto=False)
+
+
+@app.route("/autoplay")
+def auto_play():
+    user_name = request.args.get("userName")
+    return render_template('play.html', user_name=user_name,  is_auto=True)
 
 
 @app.route("/server_url", methods=["GET"])
