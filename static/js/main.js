@@ -193,20 +193,6 @@ const stopTimer = function(e) {
   postScore(score);
 };
 
-const postRandomScore = function() {
-  $.ajax({
-    url: serverUrl + "/result",
-    type: "POST",
-    data: {
-      userName: userName,
-      gameId: gameId,
-      score: randomScore
-    }
-  }).done(() => {
-    joinGame();
-  });
-};
-
 const postScore = function(score) {
   $.ajax({
     url: serverUrl + "/result",
