@@ -28,13 +28,13 @@ $(function() {
 
 const getServerUrl = function() {
   $.ajax({
-    url: serverUrl + "/server_url",
+    url: serverUrl + "/connection",
     type: "GET",
     data: {
       userName: userName
     }
   }).done(res => {
-    serverUrl = "http://" + res.server_url;
+    serverUrl = "http://" + res.connection.allocation;
   });
 };
 

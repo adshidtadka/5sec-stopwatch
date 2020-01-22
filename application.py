@@ -52,13 +52,13 @@ def auto_play():
     return render_template('play.html', user_name=user_name,  is_auto=True)
 
 
-@app.route("/server_url", methods=["GET"])
+@app.route("/connection", methods=["GET"])
 @cross_origin()
-def get_server_url():
+def get_connection():
     user_name = request.args.get("userName")
-    with open("./allocation.json") as f:
-        server_url = json.load(f)[user_name]["allocation"]
-        return {"status": 200, "server_url": server_url}
+    with open("./graph.json") as f:
+        connection = json.load(f)[user_name]
+        return {"status": 200, "connection": connection}
 
 
 @app.route("/game", methods=["GET"])
@@ -78,7 +78,7 @@ def create_game():
     game_dict = dict(id=game_tuple[0], start_time=game_tuple[1])
 
     # multicast
-    with open("./allocation.json") as f:
+    with open("./graph.json") as f:
         for server in json.load(f)["server_" + sys.argv[1]]["allocation"]:
             url = "http://" + server + "/sync_game"
             requests.post(url, data=game_dict)
@@ -112,7 +112,7 @@ def create_player():
     g.db.commit()
 
     # multicast
-    with open("./allocation.json") as f:
+    with open("./graph.json") as f:
         for server in json.load(f)["server_" + sys.argv[1]]["allocation"]:
             url = "http://" + server + "/sync_player"
             requests.post(url, data=request.form)
@@ -140,7 +140,7 @@ def update_result():
     g.db.commit()
 
     # multicast
-    with open("./allocation.json") as f:
+    with open("./graph.json") as f:
         for server in json.load(f)["server_" + sys.argv[1]]["allocation"]:
             url = "http://" + server + "/sync_result"
             requests.post(url, data=request.form)
