@@ -82,7 +82,6 @@ def create_game():
     with open("./graph.json") as f:
         for server in json.load(f)["server_" + sys.argv[1]]:
             url = "http://" + server["allocation"] + "/sync_game"
-            time.sleep(server["delay"] / 1000)
             requests.post(url, data=game_dict)
 
     return {"status": 200, "game": game_dict}
@@ -117,7 +116,6 @@ def create_player():
     with open("./graph.json") as f:
         for server in json.load(f)["server_" + sys.argv[1]]:
             url = "http://" + server["allocation"] + "/sync_player"
-            time.sleep(server["delay"] / 1000)
             requests.post(url, data=request.form)
 
     return {"status": 200}
