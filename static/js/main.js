@@ -4,7 +4,7 @@ const TIMER = 5;
 const userName = $("#user-name").text();
 let isAuto;
 let gameId;
-let endLoadingTime, endTimerTime;
+let endLoadingTime, endTimerTime, startGettingTime;
 let timerTimeOut, getPlayersTimeOut;
 let fetchedPlayers;
 let serverUrl = "http://localhost:4001";
@@ -204,7 +204,12 @@ const postScore = function(score) {
       score: score
     }
   }).done(() => {
-    isAuto == true ? joinGame() : getResults();
+    if (isAuto == true) {
+      joinGame();
+    } else {
+      startGettingTime = new Date();
+      getResults();
+    }
   });
 };
 
@@ -235,6 +240,16 @@ const getResults = function() {
 
     if (data["players"].length < fetchedPlayers.length) {
       setTimeout(getResults, 1000);
+    } else {
+      const nowTime = new Date();
+      let responseTime = nowTime - startGettingTime;
+      $("#res-time").append(
+        "It takes <strong>" +
+          String(responseTime) +
+          " [ms]</strong> to get ranking!"
+      );
+      $(".alert").show("slow");
+      console.log(responseTime);
     }
   });
 };
