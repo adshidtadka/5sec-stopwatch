@@ -4,10 +4,11 @@ const TIMER = 5;
 const userName = $("#user-name").text();
 let isAuto;
 let gameId;
-let endLoadingTime, endTimerTime;
+let endLoadingTime, endTimerTime, startGettingTime;
 let timerTimeOut, getPlayersTimeOut;
 let fetchedPlayers;
 let serverUrl = "http://localhost:4001";
+let delay;
 
 $(function() {
   if ($("#value-is-auto").text() == "True") {
@@ -26,20 +27,21 @@ $(function() {
   }
 });
 
-const getServerUrl = function() {
+const getConnection = function() {
   $.ajax({
-    url: serverUrl + "/server_url",
+    url: serverUrl + "/connection",
     type: "GET",
     data: {
       userName: userName
     }
   }).done(res => {
-    serverUrl = "http://" + res.server_url;
+    serverUrl = "http://" + res.connection.allocation;
+    delay = res.connection.delay;
   });
 };
 
 const joinGame = function() {
-  getServerUrl();
+  getConnection();
   $.ajax({
     url: serverUrl + "/game",
     type: "GET"
@@ -57,16 +59,14 @@ const joinGame = function() {
 const generateRandomScore = function() {
   const randomTime = Math.round(gaussian(50, 50)());
   const intervalTime =
-    getRemainTime(endLoadingTime).time +
-    (COUNTDOWN + TIMER) * 1000 -
-    randomTime * 10;
+    getRemainTime(endLoadingTime).time + (COUNTDOWN + TIMER) * 1000;
   let randomScore;
   randomScore = randomTime == 0 ? INF : randomTime;
-  setTimeout(postScore, intervalTime, randomScore);
+  setTimeout(postScore, intervalTime + delay, randomScore);
 };
 
 const createGame = function() {
-  getServerUrl();
+  getConnection();
   $.ajax({
     url: serverUrl + "/game",
     type: "POST"
@@ -187,22 +187,11 @@ const stopTimer = function(e) {
   $("#stop").remove();
   $("#table-thead").text("");
   $("#table-tbody").text("");
+  $("#table-thead").append(
+    "<tr><th scope='col'>#</th><th scope='col'>user</th><th scope='col'>score</th></tr>"
+  );
 
-  postScore(score);
-};
-
-const postRandomScore = function() {
-  $.ajax({
-    url: serverUrl + "/result",
-    type: "POST",
-    data: {
-      userName: userName,
-      gameId: gameId,
-      score: randomScore
-    }
-  }).done(() => {
-    joinGame();
-  });
+  setTimeout(postScore, getRemainTime(endTimerTime).time + delay, score);
 };
 
 const postScore = function(score) {
@@ -218,9 +207,7 @@ const postScore = function(score) {
     if (isAuto == true) {
       joinGame();
     } else {
-      $("#table-thead").append(
-        "<tr><th scope='col'>#</th><th scope='col'>user</th><th scope='col'>score</th></tr>"
-      );
+      startGettingTime = new Date();
       getResults();
     }
   });
@@ -253,6 +240,16 @@ const getResults = function() {
 
     if (data["players"].length < fetchedPlayers.length) {
       setTimeout(getResults, 1000);
+    } else {
+      const nowTime = new Date();
+      let responseTime = nowTime - startGettingTime;
+      $("#res-time").append(
+        "It takes <strong>" +
+          String(responseTime) +
+          " [ms]</strong> to get ranking!"
+      );
+      $(".alert").show("slow");
+      console.log(responseTime);
     }
   });
 };

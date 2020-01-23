@@ -248,3 +248,7 @@ header {
 .table-box {
   margin-top: 20px;
 }
+
+.alert {
+  display: none;
+}
