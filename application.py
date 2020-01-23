@@ -6,6 +6,7 @@ import json
 import sys
 import os
 import requests
+import time
 
 args = sys.argv
 SERVER_NAME = "localhost:" + str(4000 + int(sys.argv[1]))
@@ -79,8 +80,9 @@ def create_game():
 
     # multicast
     with open("./graph.json") as f:
-        for server in json.load(f)["server_" + sys.argv[1]]["allocation"]:
-            url = "http://" + server + "/sync_game"
+        for server in json.load(f)["server_" + sys.argv[1]]:
+            url = "http://" + server["allocation"] + "/sync_game"
+            time.sleep(server["delay"] / 1000)
             requests.post(url, data=game_dict)
 
     return {"status": 200, "game": game_dict}
@@ -113,8 +115,9 @@ def create_player():
 
     # multicast
     with open("./graph.json") as f:
-        for server in json.load(f)["server_" + sys.argv[1]]["allocation"]:
-            url = "http://" + server + "/sync_player"
+        for server in json.load(f)["server_" + sys.argv[1]]:
+            url = "http://" + server["allocation"] + "/sync_player"
+            time.sleep(server["delay"] / 1000)
             requests.post(url, data=request.form)
 
     return {"status": 200}
@@ -141,8 +144,9 @@ def update_result():
 
     # multicast
     with open("./graph.json") as f:
-        for server in json.load(f)["server_" + sys.argv[1]]["allocation"]:
-            url = "http://" + server + "/sync_result"
+        for server in json.load(f)["server_" + sys.argv[1]]:
+            url = "http://" + server["allocation"] + "/sync_result"
+            time.sleep(server["delay"] / 1000)
             requests.post(url, data=request.form)
 
     return {"status": 200}
