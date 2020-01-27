@@ -39,12 +39,15 @@ def favicon():
 @app.route('/')
 def index():
     user_name = request.args.get("userName")
+    if user_name == None:
+        user_name = "user_1"
     return render_template('index.html', user_name=user_name)
 
 
 @app.route('/play')
 def play():
     user_name = request.args.get("userName")
+    print(user_name)
     return render_template('play.html', user_name=user_name, is_auto=False)
 
 
