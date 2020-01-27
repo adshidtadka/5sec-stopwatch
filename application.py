@@ -140,7 +140,6 @@ def update_result():
     score = request.form["score"]
 
     with open("./graph.json") as f:
-        # determined_timeを作る
         graph = json.load(f)
         datetime_now = datetime.datetime.now()
         time_delta = datetime.timedelta(milliseconds=(graph["max_server_server_delay"] + graph["max_user_server_delay"] - graph[user_name]["delay"]))
@@ -167,7 +166,6 @@ def sync_result():
     score = request.form["score"]
 
     with open("./graph.json") as f:
-        # determined_timeを作る
         graph = json.load(f)
         datetime_now = datetime.datetime.now()
         time_delta = datetime.timedelta(milliseconds=(graph["max_user_server_delay"] - graph[user_name]["delay"]))
