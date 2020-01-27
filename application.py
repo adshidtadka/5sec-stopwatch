@@ -180,7 +180,7 @@ def sync_result():
 @cross_origin()
 def get_result():
     game_id = request.args.get("gameId")
-    players = g.db.execute("SELECT id, user_name, score FROM players WHERE game_id = ? AND score NOT NULL ORDER BY score", [game_id])
+    players = g.db.execute("SELECT id, user_name, score FROM players WHERE game_id = ? AND score NOT NULL AND determined_time < (SELECT DATETIME('NOW', 'LOCALTIME')) ORDER BY score", [game_id])
     players_list = [dict(id=row[0], user_name=row[1], score=row[2]) for row in players.fetchall()]
     return {"status": 200, "players": players_list}
 
