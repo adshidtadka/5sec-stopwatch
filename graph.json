@@ -1,14 +1,14 @@
 {
   "server_1": [
     { "allocation": "localhost:4002", "delay": 100 },
-    { "allocation": "localhost:4003", "delay": 400 }
+    { "allocation": "localhost:4003", "delay": 100 }
   ],
   "server_2": [
     { "allocation": "localhost:4001", "delay": 100 },
     { "allocation": "localhost:4003", "delay": 100 }
   ],
   "server_3": [
-    { "allocation": "localhost:4001", "delay": 400 },
+    { "allocation": "localhost:4001", "delay": 100 },
     { "allocation": "localhost:4002", "delay": 100 }
   ],
   "user_1": {
@@ -22,5 +22,7 @@
   "user_3": {
     "allocation": "localhost:4003",
     "delay": 200
-  }
+  },
+  "max_user_server_delay": 200,
+  "max_server_server_delay": 100
 }

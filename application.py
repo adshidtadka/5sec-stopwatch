@@ -7,6 +7,7 @@ import sys
 import os
 import requests
 import time
+import datetime
 
 args = sys.argv
 SERVER_NAME = "localhost:" + str(4000 + int(sys.argv[1]))
@@ -137,12 +138,21 @@ def update_result():
     user_name = request.form["userName"]
     game_id = request.form["gameId"]
     score = request.form["score"]
-    g.db.execute("UPDATE players SET score = ? WHERE game_id = ? AND user_name = ?", [score, game_id, user_name])
-    g.db.commit()
 
-    # multicast
     with open("./graph.json") as f:
-        for server in json.load(f)["server_" + sys.argv[1]]:
+        # determined_timeを作る
+        graph = json.load(f)
+        datetime_now = datetime.datetime.now()
+        time_delta = datetime.timedelta(milliseconds=(graph["max_server_server_delay"] + graph["max_user_server_delay"] - graph[user_name]["delay"]))
+        determined_time = datetime_now + time_delta
+        print(determined_time)
+
+        g.db.execute("UPDATE players SET score = ?, determined_time = ? WHERE game_id = ? AND user_name = ?",
+                     [score, determined_time, game_id, user_name])
+        g.db.commit()
+
+        # multicast
+        for server in graph["server_" + sys.argv[1]]:
             url = "http://" + server["allocation"] + "/sync_result"
             time.sleep(server["delay"] / 1000)
             requests.post(url, data=request.form)
@@ -156,6 +166,7 @@ def sync_result():
     user_name = request.form["userName"]
     game_id = request.form["gameId"]
     score = request.form["score"]
+    # determinzed_timeを作る
     g.db.execute("UPDATE players SET score = ? WHERE game_id = ? AND user_name = ?", [score, game_id, user_name])
     g.db.commit()
     return {"status": 200}
