@@ -59,7 +59,9 @@ const joinGame = function() {
 const generateRandomScore = function() {
   const randomTime = Math.round(gaussian(50, 50)());
   const intervalTime =
-    getRemainTime(endLoadingTime).time + (COUNTDOWN + TIMER) * 1000;
+    getRemainTime(endLoadingTime).time +
+    (COUNTDOWN + TIMER) * 1000 -
+    randomTime * 100;
   let randomScore;
   randomScore = randomTime == 0 ? INF : randomTime;
   setTimeout(postScore, intervalTime + delay, randomScore);
@@ -191,7 +193,7 @@ const stopTimer = function(e) {
     "<tr><th scope='col'>#</th><th scope='col'>user</th><th scope='col'>score</th></tr>"
   );
 
-  setTimeout(postScore, getRemainTime(endTimerTime).time + delay, score);
+  setTimeout(postScore, delay, score);
 };
 
 const postScore = function(score) {

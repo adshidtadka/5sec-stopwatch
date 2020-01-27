@@ -9,5 +9,6 @@ CREATE TABLE players (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     game_id INT NOT NULL,
     user_name STRING NOT NULL,
-    score INT
+    score INT,
+    determined_time DATETIME
 );

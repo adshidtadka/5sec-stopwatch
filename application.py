@@ -7,6 +7,7 @@ import sys
 import os
 import requests
 import time
+import datetime
 
 args = sys.argv
 SERVER_NAME = "localhost:" + str(4000 + int(sys.argv[1]))
@@ -137,12 +138,19 @@ def update_result():
     user_name = request.form["userName"]
     game_id = request.form["gameId"]
     score = request.form["score"]
-    g.db.execute("UPDATE players SET score = ? WHERE game_id = ? AND user_name = ?", [score, game_id, user_name])
-    g.db.commit()
 
-    # multicast
     with open("./graph.json") as f:
-        for server in json.load(f)["server_" + sys.argv[1]]:
+        graph = json.load(f)
+        datetime_now = datetime.datetime.now()
+        time_delta = datetime.timedelta(milliseconds=(graph["max_server_server_delay"] + graph["max_user_server_delay"] - graph[user_name]["delay"]))
+        determined_time = datetime_now + time_delta
+
+        g.db.execute("UPDATE players SET score = ?, determined_time = ? WHERE game_id = ? AND user_name = ?",
+                     [score, determined_time, game_id, user_name])
+        g.db.commit()
+
+        # multicast
+        for server in graph["server_" + sys.argv[1]]:
             url = "http://" + server["allocation"] + "/sync_result"
             time.sleep(server["delay"] / 1000)
             requests.post(url, data=request.form)
@@ -156,16 +164,23 @@ def sync_result():
     user_name = request.form["userName"]
     game_id = request.form["gameId"]
     score = request.form["score"]
-    g.db.execute("UPDATE players SET score = ? WHERE game_id = ? AND user_name = ?", [score, game_id, user_name])
-    g.db.commit()
-    return {"status": 200}
+
+    with open("./graph.json") as f:
+        graph = json.load(f)
+        datetime_now = datetime.datetime.now()
+        time_delta = datetime.timedelta(milliseconds=(graph["max_user_server_delay"] - graph[user_name]["delay"]))
+        determined_time = datetime_now + time_delta
+
+        g.db.execute("UPDATE players SET score = ?, determined_time = ? WHERE game_id = ? AND user_name = ?", [score, determined_time, game_id, user_name])
+        g.db.commit()
+        return {"status": 200}
 
 
 @app.route("/result", methods=["GET"])
 @cross_origin()
 def get_result():
     game_id = request.args.get("gameId")
-    players = g.db.execute("SELECT id, user_name, score FROM players WHERE game_id = ? AND score NOT NULL ORDER BY score", [game_id])
+    players = g.db.execute("SELECT id, user_name, score FROM players WHERE game_id = ? AND score NOT NULL AND determined_time < (SELECT DATETIME('NOW', 'LOCALTIME')) ORDER BY score", [game_id])
     players_list = [dict(id=row[0], user_name=row[1], score=row[2]) for row in players.fetchall()]
     return {"status": 200, "players": players_list}
 
