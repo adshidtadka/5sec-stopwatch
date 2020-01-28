@@ -11,6 +11,8 @@ let serverUrl = "http://localhost:4001";
 let delay;
 
 $(function() {
+  $(".dropdown").remove();
+
   if ($("#value-is-auto").text() == "True") {
     isAuto = true;
 
