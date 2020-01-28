@@ -2,3 +2,4 @@ flask
 flask-cors
 contextlib2
 requests
+gunicorn
