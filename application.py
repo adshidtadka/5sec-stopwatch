@@ -10,7 +10,7 @@ import time
 import datetime
 
 args = sys.argv
-SERVER_NAME = "localhost:" + str(4000 + int(sys.argv[1]))
+# SERVER_NAME = "localhost:" + str(4000 + int(sys.argv[1]))
 DEBUG = False
 DATABASE = "models/5sec-server_" + sys.argv[1] + ".db"
 
