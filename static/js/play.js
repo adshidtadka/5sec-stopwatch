@@ -3,7 +3,7 @@ const COUNTDOWN = 3;
 const TIMER = 5;
 const userName = $("#user-name").text();
 let isAuto;
-let gameId;
+let gameId = 0;
 let endLoadingTime, endTimerTime, startGettingTime;
 let timerTimeOut, getPlayersTimeOut;
 let fetchedPlayers;
@@ -48,7 +48,8 @@ const joinGame = function() {
     url: serverUrl + "/game",
     type: "GET"
   }).done(res => {
-    if (res.game.id == null) {
+    console.log(res.game);
+    if (res.game.id <= gameId) {
       setTimeout(joinGame, 1000);
     } else {
       gameId = res.game.id;
