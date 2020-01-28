@@ -10,5 +10,6 @@ CREATE TABLE players (
     game_id INT NOT NULL,
     user_name STRING NOT NULL,
     score INT,
-    determined_time DATETIME
+    determined_time DATETIME,
+    UNIQUE (game_id, user_name)
 );
