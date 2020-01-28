@@ -11,6 +11,8 @@ import datetime
 
 args = sys.argv
 # SERVER_NAME = "localhost:" + str(4000 + int(sys.argv[1]))
+HOST = "0.0.0.0"
+PORT = 5000
 DEBUG = False
 DATABASE = "models/5sec-server_" + sys.argv[1] + ".db"
 
