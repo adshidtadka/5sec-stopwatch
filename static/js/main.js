@@ -251,7 +251,6 @@ const getResults = function() {
           " [ms]</strong> to get ranking!"
       );
       $(".alert").show("slow");
-      console.log(responseTime);
     }
   });
 };
